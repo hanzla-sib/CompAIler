@@ -8,6 +8,7 @@ import { HiOutlinePhotograph } from 'react-icons/hi';
 import { toast } from 'react-toastify';
 import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '../constants/prompts';
 import { fixBrokenImages, addImageErrorHandling } from '../utils/imageUtils';
+import { useTheme } from '../contexts/ThemeContext';
 
 /**
  * CodeEditor component for displaying and editing code
@@ -29,6 +30,7 @@ const CodeEditor = ({
   onFixImages,
   refreshKey 
 }) => {
+  const { isDarkMode } = useTheme();
   // Copy code to clipboard
   const copyCode = async () => {
     if (!code?.trim()) {
@@ -89,13 +91,16 @@ const CodeEditor = ({
   return (
     <>
       {/* Tabs */}
-      <div className="bg-[#17171C] w-full h-[50px] flex items-center gap-2 sm:gap-3 px-2 sm:px-3">
+      <div className="w-full h-[50px] flex items-center gap-2 sm:gap-3 px-2 sm:px-3" 
+           style={{ backgroundColor: 'var(--tertiary-bg)' }}>
         <button
           onClick={() => onTabChange(1)}
           className={`w-1/2 py-2 rounded-lg transition-all text-sm sm:text-base ${
             activeTab === 1 
               ? "bg-purple-600 text-white" 
-              : "bg-zinc-800 text-gray-300 hover:bg-zinc-700"
+              : isDarkMode 
+                ? "bg-zinc-800 text-gray-300 hover:bg-zinc-700" 
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
           }`}
         >
           Code
@@ -105,7 +110,9 @@ const CodeEditor = ({
           className={`w-1/2 py-2 rounded-lg transition-all text-sm sm:text-base ${
             activeTab === 2 
               ? "bg-purple-600 text-white" 
-              : "bg-zinc-800 text-gray-300 hover:bg-zinc-700"
+              : isDarkMode 
+                ? "bg-zinc-800 text-gray-300 hover:bg-zinc-700" 
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
           }`}
         >
           Preview
@@ -113,8 +120,10 @@ const CodeEditor = ({
       </div>
 
       {/* Toolbar */}
-      <div className="bg-[#17171C] w-full h-[50px] flex items-center justify-between px-2 sm:px-4">
-        <p className='font-bold text-gray-200 text-sm sm:text-base truncate'>
+      <div className="w-full h-[50px] flex items-center justify-between px-2 sm:px-4" 
+           style={{ backgroundColor: 'var(--tertiary-bg)' }}>
+        <p className='font-bold text-sm sm:text-base truncate' 
+           style={{ color: 'var(--text-color)' }}>
           {activeTab === 1 ? 'Code Editor' : 'Live Preview'}
         </p>
         <div className="flex items-center gap-1 sm:gap-2">
@@ -122,14 +131,28 @@ const CodeEditor = ({
             <>
               <button 
                 onClick={copyCode} 
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl border border-zinc-800 flex items-center justify-center hover:bg-[#333] transition-colors text-sm sm:text-base"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl border flex items-center justify-center transition-colors text-sm sm:text-base"
+                style={{ 
+                  borderColor: 'var(--border-color)', 
+                  color: 'var(--text-color)',
+                  backgroundColor: 'transparent'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--hover-bg)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
                 title="Copy Code"
               >
                 <IoCopy />
               </button>
               <button 
                 onClick={downloadFile} 
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl border border-zinc-800 flex items-center justify-center hover:bg-[#333] transition-colors text-sm sm:text-base"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl border flex items-center justify-center transition-colors text-sm sm:text-base"
+                style={{ 
+                  borderColor: 'var(--border-color)', 
+                  color: 'var(--text-color)',
+                  backgroundColor: 'transparent'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--hover-bg)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
                 title="Download File"
               >
                 <PiExportBold />
@@ -139,21 +162,42 @@ const CodeEditor = ({
             <>
               <button 
                 onClick={handleFixImages} 
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl border border-zinc-800 flex items-center justify-center hover:bg-[#333] transition-colors text-sm sm:text-base"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl border flex items-center justify-center transition-colors text-sm sm:text-base"
+                style={{ 
+                  borderColor: 'var(--border-color)', 
+                  color: 'var(--text-color)',
+                  backgroundColor: 'transparent'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--hover-bg)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
                 title="Fix Broken Images"
               >
                 <HiOutlinePhotograph />
               </button>
               <button 
                 onClick={onNewTab} 
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl border border-zinc-800 flex items-center justify-center hover:bg-[#333] transition-colors text-sm sm:text-base"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl border flex items-center justify-center transition-colors text-sm sm:text-base"
+                style={{ 
+                  borderColor: 'var(--border-color)', 
+                  color: 'var(--text-color)',
+                  backgroundColor: 'transparent'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--hover-bg)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
                 title="Open in New Tab"
               >
                 <ImNewTab />
               </button>
               <button 
                 onClick={onRefresh} 
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl border border-zinc-800 flex items-center justify-center hover:bg-[#333] transition-colors text-sm sm:text-base"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl border flex items-center justify-center transition-colors text-sm sm:text-base"
+                style={{ 
+                  borderColor: 'var(--border-color)', 
+                  color: 'var(--text-color)',
+                  backgroundColor: 'transparent'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--hover-bg)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
                 title="Refresh Preview"
               >
                 <FiRefreshCcw />
@@ -169,7 +213,7 @@ const CodeEditor = ({
           <Editor 
             value={code} 
             height="100%" 
-            theme='vs-dark' 
+            theme={isDarkMode ? 'vs-dark' : 'light'} 
             language="html"
             options={{
               minimap: { enabled: false },
