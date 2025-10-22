@@ -1,0 +1,161 @@
+import React from 'react';
+import Editor from '@monaco-editor/react';
+import { IoCopy, IoCloseSharp } from 'react-icons/io5';
+import { PiExportBold } from 'react-icons/pi';
+import { ImNewTab } from 'react-icons/im';
+import { FiRefreshCcw } from 'react-icons/fi';
+import { toast } from 'react-toastify';
+import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '../constants/prompts';
+
+/**
+ * CodeEditor component for displaying and editing code
+ * @param {Object} props - Component props
+ * @param {string} props.code - Code content to display
+ * @param {number} props.activeTab - Active tab (1 for code, 2 for preview)
+ * @param {function} props.onTabChange - Handler for tab changes
+ * @param {function} props.onNewTab - Handler for opening in new tab
+ * @param {function} props.onRefresh - Handler for refreshing preview
+ * @param {number} props.refreshKey - Key for forcing iframe refresh
+ */
+const CodeEditor = ({ 
+  code, 
+  activeTab, 
+  onTabChange, 
+  onNewTab, 
+  onRefresh, 
+  refreshKey 
+}) => {
+  // Copy code to clipboard
+  const copyCode = async () => {
+    if (!code?.trim()) {
+      toast.error(ERROR_MESSAGES.NO_CODE);
+      return;
+    }
+    
+    try {
+      await navigator.clipboard.writeText(code);
+      toast.success(SUCCESS_MESSAGES.CODE_COPIED);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+      toast.error(ERROR_MESSAGES.COPY_FAILED);
+    }
+  };
+
+  // Download code as file
+  const downloadFile = () => {
+    if (!code?.trim()) {
+      toast.error(ERROR_MESSAGES.NO_CODE_DOWNLOAD);
+      return;
+    }
+
+    const fileName = "CompAIler-Generated-Code.html";
+    const blob = new Blob([code], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.click();
+    URL.revokeObjectURL(url);
+    toast.success(SUCCESS_MESSAGES.FILE_DOWNLOADED);
+  };
+
+  return (
+    <>
+      {/* Tabs */}
+      <div className="bg-[#17171C] w-full h-[50px] flex items-center gap-3 px-3">
+        <button
+          onClick={() => onTabChange(1)}
+          className={`w-1/2 py-2 rounded-lg transition-all ${
+            activeTab === 1 
+              ? "bg-purple-600 text-white" 
+              : "bg-zinc-800 text-gray-300 hover:bg-zinc-700"
+          }`}
+        >
+          Code
+        </button>
+        <button
+          onClick={() => onTabChange(2)}
+          className={`w-1/2 py-2 rounded-lg transition-all ${
+            activeTab === 2 
+              ? "bg-purple-600 text-white" 
+              : "bg-zinc-800 text-gray-300 hover:bg-zinc-700"
+          }`}
+        >
+          Preview
+        </button>
+      </div>
+
+      {/* Toolbar */}
+      <div className="bg-[#17171C] w-full h-[50px] flex items-center justify-between px-4">
+        <p className='font-bold text-gray-200'>
+          {activeTab === 1 ? 'Code Editor' : 'Live Preview'}
+        </p>
+        <div className="flex items-center gap-2">
+          {activeTab === 1 ? (
+            <>
+              <button 
+                onClick={copyCode} 
+                className="w-10 h-10 rounded-xl border border-zinc-800 flex items-center justify-center hover:bg-[#333] transition-colors"
+                title="Copy Code"
+              >
+                <IoCopy />
+              </button>
+              <button 
+                onClick={downloadFile} 
+                className="w-10 h-10 rounded-xl border border-zinc-800 flex items-center justify-center hover:bg-[#333] transition-colors"
+                title="Download File"
+              >
+                <PiExportBold />
+              </button>
+            </>
+          ) : (
+            <>
+              <button 
+                onClick={onNewTab} 
+                className="w-10 h-10 rounded-xl border border-zinc-800 flex items-center justify-center hover:bg-[#333] transition-colors"
+                title="Open in New Tab"
+              >
+                <ImNewTab />
+              </button>
+              <button 
+                onClick={onRefresh} 
+                className="w-10 h-10 rounded-xl border border-zinc-800 flex items-center justify-center hover:bg-[#333] transition-colors"
+                title="Refresh Preview"
+              >
+                <FiRefreshCcw />
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Editor / Preview */}
+      <div className="h-full">
+        {activeTab === 1 ? (
+          <Editor 
+            value={code} 
+            height="100%" 
+            theme='vs-dark' 
+            language="html"
+            options={{
+              minimap: { enabled: false },
+              fontSize: 14,
+              wordWrap: 'on',
+              automaticLayout: true,
+              scrollBeyondLastLine: false,
+            }}
+          />
+        ) : (
+          <iframe 
+            key={refreshKey} 
+            srcDoc={code} 
+            className="w-full h-full bg-white text-black"
+            title="Code Preview"
+          />
+        )}
+      </div>
+    </>
+  );
+};
+
+export default CodeEditor;
