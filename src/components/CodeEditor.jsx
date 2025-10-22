@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Editor from '@monaco-editor/react';
-import { IoCopy, IoCloseSharp } from 'react-icons/io5';
+import { IoCopy, IoCheckmark, IoCloseSharp } from 'react-icons/io5';
 import { PiExportBold } from 'react-icons/pi';
 import { ImNewTab } from 'react-icons/im';
 import { FiRefreshCcw } from 'react-icons/fi';
@@ -31,19 +31,33 @@ const CodeEditor = ({
   refreshKey 
 }) => {
   const { isDarkMode } = useTheme();
-  // Copy code to clipboard
+  const [isCoying, setIsCoying] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
+  // Copy code to clipboard with animation
   const copyCode = async () => {
     if (!code?.trim()) {
       toast.error(ERROR_MESSAGES.NO_CODE);
       return;
     }
     
+    setIsCoying(true);
+    
     try {
       await navigator.clipboard.writeText(code);
+      setCopySuccess(true);
       toast.success(SUCCESS_MESSAGES.CODE_COPIED);
+      
+      // Reset states after animation
+      setTimeout(() => {
+        setCopySuccess(false);
+        setIsCoying(false);
+      }, 2000);
+      
     } catch (err) {
       console.error('Failed to copy: ', err);
       toast.error(ERROR_MESSAGES.COPY_FAILED);
+      setIsCoying(false);
+      setCopySuccess(false);
     }
   };
 
@@ -131,17 +145,35 @@ const CodeEditor = ({
             <>
               <button 
                 onClick={copyCode} 
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl border flex items-center justify-center transition-colors text-sm sm:text-base"
+                disabled={isCoying}
+                className={`copy-button w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl border flex items-center justify-center text-sm sm:text-base relative overflow-hidden
+                  ${copySuccess ? 'copy-success' : ''} 
+                  ${isCoying ? 'copy-loading' : ''} 
+                  transition-all duration-300 ease-in-out transform 
+                  hover:scale-110 active:scale-95 
+                  ${isCoying ? 'cursor-not-allowed' : 'hover:rotate-12'}
+                `}
                 style={{ 
-                  borderColor: 'var(--border-color)', 
-                  color: 'var(--text-color)',
-                  backgroundColor: 'transparent'
+                  borderColor: copySuccess ? '#10b981' : 'var(--border-color)', 
+                  color: copySuccess ? '#10b981' : 'var(--text-color)',
+                  backgroundColor: copySuccess ? 'rgba(16, 185, 129, 0.1)' : 'transparent'
                 }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--hover-bg)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
-                title="Copy Code"
+                title={copySuccess ? "Copied!" : isCoying ? "Copying..." : "Copy Code"}
               >
-                <IoCopy />
+                <div className={`copy-icon-container transition-all duration-300 ${copySuccess ? 'animate-bounce' : ''}`}>
+                  {copySuccess ? (
+                    <IoCheckmark className="text-green-500 animate-pulse" />
+                  ) : (
+                    <IoCopy className={`${isCoying ? 'animate-spin' : ''}`} />
+                  )}
+                </div>
+                
+                {/* Ripple effect */}
+                {isCoying && (
+                  <div className="absolute inset-0 rounded-lg overflow-hidden">
+                    <div className="ripple-effect"></div>
+                  </div>
+                )}
               </button>
               <button 
                 onClick={downloadFile} 
