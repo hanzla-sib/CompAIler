@@ -164,7 +164,7 @@ const CodeEditor = ({
       </div>
 
       {/* Editor / Preview */}
-      <div className="h-full">
+      <div className=" sm:h-[240px] lg:h-[550px]">
         {activeTab === 1 ? (
           <Editor 
             value={code} 
@@ -185,7 +185,7 @@ const CodeEditor = ({
             srcDoc={code} 
             className="w-full h-full bg-white text-black overflow-auto"
             title="Code Preview"
-            style={{ minHeight: '300px' }}
+            // style={{ minHeight: '300px' }}
           />
         )}
       </div>
