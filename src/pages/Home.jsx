@@ -20,6 +20,7 @@ const Home = () => {
     handlePromptChange,
     handleNewTabToggle,
     handleRefresh,
+    handleFixImages,
   } = useComponentGenerator();
 
   return (
@@ -27,28 +28,33 @@ const Home = () => {
       <Navbar />
 
       {/* Main Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 px-6 lg:px-16">
+      <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 lg:gap-6 px-4 sm:px-6 lg:px-16 pb-6">
         {/* Left Section - Input Form */}
-        <ComponentGenerator 
-          prompt={prompt}
-          onPromptChange={handlePromptChange}
-          framework={framework}
-          onFrameworkChange={handleFrameworkChange}
-          onGenerate={handleGenerateCode}
-          loading={loading}
-        />
+        <div className="w-full">
+          <ComponentGenerator 
+            prompt={prompt}
+            onPromptChange={handlePromptChange}
+            framework={framework}
+            onFrameworkChange={handleFrameworkChange}
+            onGenerate={handleGenerateCode}
+            loading={loading}
+          />
+        </div>
 
         {/* Right Section - Output Display */}
-        <OutputDisplay 
-          code={code}
-          hasOutput={outputScreen}
-          activeTab={activeTab}
-          onTabChange={handleTabChange}
-          isNewTabOpen={isNewTabOpen}
-          onNewTabToggle={handleNewTabToggle}
-          refreshKey={refreshKey}
-          onRefresh={handleRefresh}
-        />
+        <div className="w-full">
+          <OutputDisplay 
+            code={code}
+            hasOutput={outputScreen}
+            activeTab={activeTab}
+            onTabChange={handleTabChange}
+            isNewTabOpen={isNewTabOpen}
+            onNewTabToggle={handleNewTabToggle}
+            refreshKey={refreshKey}
+            onRefresh={handleRefresh}
+            onFixImages={handleFixImages}
+          />
+        </div>
       </div>
     </>
   )

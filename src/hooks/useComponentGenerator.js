@@ -30,13 +30,18 @@ export const useComponentGenerator = () => {
     try {
       setLoading(true);
       const response = await generateCode(prompt, framework.value);
-      const extractedCode = extractCode(response);
+      const result = await extractCode(response); // Now returns object with code and fixedImagesCount
       
-      setCode(extractedCode);
+      setCode(result.code);
       setOutputScreen(true);
       setActiveTab(1); // Switch to code tab after generation
       
       toast.success(SUCCESS_MESSAGES.CODE_GENERATED);
+      
+      // Show notification if images were fixed
+      if (result.fixedImagesCount > 0) {
+        toast.info(`${SUCCESS_MESSAGES.IMAGES_FIXED} (${result.fixedImagesCount} image${result.fixedImagesCount > 1 ? 's' : ''})`);
+      }
     } catch (error) {
       console.error('Generation error:', error);
       toast.error(error.message || ERROR_MESSAGES.GENERATION_FAILED);
@@ -85,6 +90,15 @@ export const useComponentGenerator = () => {
   };
 
   /**
+   * Handle fixing broken images in generated code
+   * @param {string} fixedCode - Code with fixed images
+   */
+  const handleFixImages = (fixedCode) => {
+    setCode(fixedCode);
+    setRefreshKey(prev => prev + 1); // Force preview refresh
+  };
+
+  /**
    * Reset generator state
    */
   const resetGenerator = () => {
@@ -116,6 +130,7 @@ export const useComponentGenerator = () => {
     handlePromptChange,
     handleNewTabToggle,
     handleRefresh,
+    handleFixImages,
     resetGenerator,
   };
 };

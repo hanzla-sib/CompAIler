@@ -26,6 +26,19 @@ Requirements:
 - Use modern CSS features like flexbox, grid, and custom properties.
 - Ensure accessibility with proper ARIA labels and semantic HTML.
 - Make it mobile-first and responsive for all screen sizes.
+
+**IMPORTANT IMAGE AND LINK GUIDELINES:**
+- When using images, prefer reliable sources like:
+  * Picsum: https://picsum.photos/[width]/[height] (most reliable)
+  * Placeholder services: https://via.placeholder.com/[width]x[height]
+  * Unsplash: https://images.unsplash.com/photo-[ID]?w=[width]&h=[height]&fit=crop
+- Always include proper alt attributes for accessibility
+- Use appropriate width and height attributes
+- Avoid using random URLs that might be broken or return 404 errors
+- For user avatars or profile images, use: https://ui-avatars.com/api/?name=[name]&size=[size]
+- NEVER wrap images in clickable anchor tags (<a href="..."><img></a>) - this creates security issues
+- If you need clickable images, use onclick handlers or buttons instead
+- For galleries or lightboxes, use div containers with click handlers, not anchor links
 `;
 }
 
@@ -123,4 +136,5 @@ export const SUCCESS_MESSAGES = {
   CODE_GENERATED: "Code generated successfully",
   CODE_REVIEWED: "Code review completed",
   CODE_FIXED: "Code fixed successfully",
+  IMAGES_FIXED: "Broken images automatically replaced with placeholders",
 };

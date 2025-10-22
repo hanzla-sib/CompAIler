@@ -4,8 +4,10 @@ import { IoCopy, IoCloseSharp } from 'react-icons/io5';
 import { PiExportBold } from 'react-icons/pi';
 import { ImNewTab } from 'react-icons/im';
 import { FiRefreshCcw } from 'react-icons/fi';
+import { HiOutlinePhotograph } from 'react-icons/hi';
 import { toast } from 'react-toastify';
 import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '../constants/prompts';
+import { fixBrokenImages, addImageErrorHandling } from '../utils/imageUtils';
 
 /**
  * CodeEditor component for displaying and editing code
@@ -15,6 +17,7 @@ import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '../constants/prompts';
  * @param {function} props.onTabChange - Handler for tab changes
  * @param {function} props.onNewTab - Handler for opening in new tab
  * @param {function} props.onRefresh - Handler for refreshing preview
+ * @param {function} props.onFixImages - Handler for fixing broken images
  * @param {number} props.refreshKey - Key for forcing iframe refresh
  */
 const CodeEditor = ({ 
@@ -23,6 +26,7 @@ const CodeEditor = ({
   onTabChange, 
   onNewTab, 
   onRefresh, 
+  onFixImages,
   refreshKey 
 }) => {
   // Copy code to clipboard
@@ -59,13 +63,36 @@ const CodeEditor = ({
     toast.success(SUCCESS_MESSAGES.FILE_DOWNLOADED);
   };
 
+  // Fix broken images in current code
+  const handleFixImages = async () => {
+    if (!code?.trim()) {
+      toast.error("No code to fix images for");
+      return;
+    }
+
+    try {
+      const result = await fixBrokenImages(code);
+      const fixedCode = addImageErrorHandling(result.html);
+      
+      if (result.fixedCount > 0) {
+        onFixImages(fixedCode);
+        toast.success(`Fixed ${result.fixedCount} broken image${result.fixedCount > 1 ? 's' : ''}`);
+      } else {
+        toast.info("No broken images found");
+      }
+    } catch (error) {
+      console.error('Error fixing images:', error);
+      toast.error("Failed to fix images");
+    }
+  };
+
   return (
     <>
       {/* Tabs */}
-      <div className="bg-[#17171C] w-full h-[50px] flex items-center gap-3 px-3">
+      <div className="bg-[#17171C] w-full h-[50px] flex items-center gap-2 sm:gap-3 px-2 sm:px-3">
         <button
           onClick={() => onTabChange(1)}
-          className={`w-1/2 py-2 rounded-lg transition-all ${
+          className={`w-1/2 py-2 rounded-lg transition-all text-sm sm:text-base ${
             activeTab === 1 
               ? "bg-purple-600 text-white" 
               : "bg-zinc-800 text-gray-300 hover:bg-zinc-700"
@@ -75,7 +102,7 @@ const CodeEditor = ({
         </button>
         <button
           onClick={() => onTabChange(2)}
-          className={`w-1/2 py-2 rounded-lg transition-all ${
+          className={`w-1/2 py-2 rounded-lg transition-all text-sm sm:text-base ${
             activeTab === 2 
               ? "bg-purple-600 text-white" 
               : "bg-zinc-800 text-gray-300 hover:bg-zinc-700"
@@ -86,23 +113,23 @@ const CodeEditor = ({
       </div>
 
       {/* Toolbar */}
-      <div className="bg-[#17171C] w-full h-[50px] flex items-center justify-between px-4">
-        <p className='font-bold text-gray-200'>
+      <div className="bg-[#17171C] w-full h-[50px] flex items-center justify-between px-2 sm:px-4">
+        <p className='font-bold text-gray-200 text-sm sm:text-base truncate'>
           {activeTab === 1 ? 'Code Editor' : 'Live Preview'}
         </p>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           {activeTab === 1 ? (
             <>
               <button 
                 onClick={copyCode} 
-                className="w-10 h-10 rounded-xl border border-zinc-800 flex items-center justify-center hover:bg-[#333] transition-colors"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl border border-zinc-800 flex items-center justify-center hover:bg-[#333] transition-colors text-sm sm:text-base"
                 title="Copy Code"
               >
                 <IoCopy />
               </button>
               <button 
                 onClick={downloadFile} 
-                className="w-10 h-10 rounded-xl border border-zinc-800 flex items-center justify-center hover:bg-[#333] transition-colors"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl border border-zinc-800 flex items-center justify-center hover:bg-[#333] transition-colors text-sm sm:text-base"
                 title="Download File"
               >
                 <PiExportBold />
@@ -111,15 +138,22 @@ const CodeEditor = ({
           ) : (
             <>
               <button 
+                onClick={handleFixImages} 
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl border border-zinc-800 flex items-center justify-center hover:bg-[#333] transition-colors text-sm sm:text-base"
+                title="Fix Broken Images"
+              >
+                <HiOutlinePhotograph />
+              </button>
+              <button 
                 onClick={onNewTab} 
-                className="w-10 h-10 rounded-xl border border-zinc-800 flex items-center justify-center hover:bg-[#333] transition-colors"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl border border-zinc-800 flex items-center justify-center hover:bg-[#333] transition-colors text-sm sm:text-base"
                 title="Open in New Tab"
               >
                 <ImNewTab />
               </button>
               <button 
                 onClick={onRefresh} 
-                className="w-10 h-10 rounded-xl border border-zinc-800 flex items-center justify-center hover:bg-[#333] transition-colors"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl border border-zinc-800 flex items-center justify-center hover:bg-[#333] transition-colors text-sm sm:text-base"
                 title="Refresh Preview"
               >
                 <FiRefreshCcw />
@@ -149,8 +183,9 @@ const CodeEditor = ({
           <iframe 
             key={refreshKey} 
             srcDoc={code} 
-            className="w-full h-full bg-white text-black"
+            className="w-full h-full bg-white text-black overflow-auto"
             title="Code Preview"
+            style={{ minHeight: '300px' }}
           />
         )}
       </div>

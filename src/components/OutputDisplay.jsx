@@ -14,6 +14,7 @@ import CodeEditor from './CodeEditor';
  * @param {function} props.onNewTabToggle - Handler for new tab toggle
  * @param {number} props.refreshKey - Key for forcing preview refresh
  * @param {function} props.onRefresh - Handler for refreshing preview
+ * @param {function} props.onFixImages - Handler for fixing broken images
  */
 const OutputDisplay = ({ 
   code, 
@@ -23,11 +24,12 @@ const OutputDisplay = ({
   isNewTabOpen, 
   onNewTabToggle,
   refreshKey,
-  onRefresh
+  onRefresh,
+  onFixImages
 }) => {
   return (
     <>
-      <div className="relative mt-2 w-full h-[80vh] bg-[#141319] rounded-xl overflow-hidden">
+      <div className="relative mt-4 w-full h-full  bg-[#141319] rounded-xl overflow-hidden">
         {!hasOutput ? (
           <div className="w-full h-full flex items-center flex-col justify-center">
             <div className="p-5 w-[70px] flex items-center justify-center text-[30px] h-[70px] rounded-full bg-gradient-to-r from-purple-400 to-purple-600">
@@ -44,6 +46,7 @@ const OutputDisplay = ({
             onTabChange={onTabChange}
             onNewTab={() => onNewTabToggle(true)}
             onRefresh={onRefresh}
+            onFixImages={onFixImages}
             refreshKey={refreshKey}
           />
         )}

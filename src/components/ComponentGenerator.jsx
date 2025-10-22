@@ -52,9 +52,9 @@ const ComponentGenerator = ({
   };
 
   return (
-    <div className="w-full py-6 rounded-xl bg-[#141319] mt-5 p-5">
-      <h3 className='text-[25px] font-semibold sp-text'>AI Component Generator</h3>
-      <p className='text-gray-400 mt-2 text-[16px]'>
+    <div className="w-full py-4 sm:py-6 rounded-xl bg-[#141319] mt-2 sm:mt-5 p-3 sm:p-5">
+      <h3 className='text-xl sm:text-[25px] font-semibold sp-text'>AI Component Generator</h3>
+      <p className='text-gray-400 mt-2 text-sm sm:text-[16px]'>
         Describe your component and let AI code it for you.
       </p>
 
@@ -78,7 +78,7 @@ const ComponentGenerator = ({
         <textarea
           onChange={(e) => onPromptChange(e.target.value)}
           value={prompt}
-          className='w-full min-h-[200px] rounded-xl bg-[#09090B] mt-3 p-3 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-purple-500 resize-none'
+          className='w-full min-h-[150px] sm:min-h-[200px] rounded-xl bg-[#09090B] mt-3 p-3 text-sm sm:text-base text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-purple-500 resize-none'
           placeholder="Describe your component in detail and AI will generate it..."
           disabled={loading}
         />

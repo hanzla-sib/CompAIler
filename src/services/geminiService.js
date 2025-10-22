@@ -1,5 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { systemPrompt, fixPrompt } from "../constants/prompts";
+import { fixBrokenImages, addImageErrorHandling } from "../utils/imageUtils";
 
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY; // i have given a dummy env file and you have to make .env file and paste your own key
 
@@ -84,14 +85,29 @@ export async function fixCode(value, code) {
 }
 
 /**
- * Extract code from markdown-formatted response
+ * Extract code from markdown-formatted response and fix image issues
  * @param {string} response - Raw response that may contain markdown code blocks
- * @returns {string} Extracted code
+ * @returns {Promise<{code: string, fixedImagesCount: number}>} Extracted and image-fixed code with fix count
  */
-export function extractCode(response) {
-  if (!response) return "";
+export async function extractCode(response) {
+  if (!response) return { code: "", fixedImagesCount: 0 };
   
   // Match code blocks with optional language identifier
   const match = response.match(/```(?:\w+)?\n?([\s\S]*?)```/);
-  return match ? match[1].trim() : response.trim();
+  let extractedCode = match ? match[1].trim() : response.trim();
+  let fixedImagesCount = 0;
+  
+  // Fix broken images and add error handling
+  try {
+    const result = await fixBrokenImages(extractedCode);
+    extractedCode = result.html;
+    fixedImagesCount = result.fixedCount;
+    extractedCode = addImageErrorHandling(extractedCode);
+  } catch (error) {
+    console.warn('Failed to fix images, using original code:', error);
+    // Add basic error handling even if validation fails
+    extractedCode = addImageErrorHandling(extractedCode);
+  }
+  
+  return { code: extractedCode, fixedImagesCount };
 }
