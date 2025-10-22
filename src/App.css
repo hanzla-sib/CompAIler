@@ -9,7 +9,8 @@ body {
   box-sizing: border-box;
   overflow-x: hidden;
   background-color: var(--primary-bg);
-  color: #fff;
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 html {
@@ -20,6 +21,23 @@ html {
   --primary-bg: #09090B;
   --secondary-bg: #141319;
   --tertiary-bg: #17171C;
+  --text-color: #ffffff;
+  --text-secondary: #9ca3af;
+  --border-color: #374151;
+  --hover-bg: #1f2937;
+  --input-bg: #09090B;
+}
+
+/* Light mode variables */
+:root:not(.dark) {
+  --primary-bg: #ffffff;
+  --secondary-bg: #f8fafc;
+  --tertiary-bg: #f1f5f9;
+  --text-color: #1a202c;
+  --text-secondary: #6b7280;
+  --border-color: #d1d5db;
+  --hover-bg: #e5e7eb;
+  --input-bg: #ffffff;
 }
 
 .sp-text {
@@ -32,8 +50,62 @@ html {
 .icon{
   padding: 15px;
   font-size: 20px;
-  border: 1px solid #1f2937;
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   background-color: var(--secondary-bg);
   cursor: pointer;
-};
+  transition: all 0.3s ease;
+}
+
+.icon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.theme-toggle {
+  position: relative;
+}
+
+.theme-toggle:hover {
+  background-color: var(--tertiary-bg);
+}
+
+/* Navigation styling for both themes */
+.nav {
+  background-color: var(--primary-bg);
+  transition: background-color 0.3s ease;
+}
+
+/* Light mode specific adjustments */
+:root:not(.dark) .nav {
+  border-bottom-color: #e2e8f0;
+}
+
+/* Dark mode specific adjustments */
+:root.dark .nav {
+  border-bottom-color: #374151;
+}
+
+/* Textarea placeholder styling for both themes */
+textarea::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+/* Scrollbar styling for both themes */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--secondary-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
