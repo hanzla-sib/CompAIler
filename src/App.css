@@ -49,6 +49,55 @@ html {
 
 .icon{
   padding: 15px;
+}
+
+/* Custom scrollbar for better responsive experience */
+.monaco-editor .scrollbar .slider,
+.monaco-editor .scrollbar,
+iframe {
+  scrollbar-width: thin;
+  scrollbar-color: #6b7280 transparent;
+}
+
+.monaco-editor .scrollbar .slider::-webkit-scrollbar,
+iframe::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.monaco-editor .scrollbar .slider::-webkit-scrollbar-track,
+iframe::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.monaco-editor .scrollbar .slider::-webkit-scrollbar-thumb,
+iframe::-webkit-scrollbar-thumb {
+  background: #6b7280;
+  border-radius: 4px;
+}
+
+.monaco-editor .scrollbar .slider::-webkit-scrollbar-thumb:hover,
+iframe::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Responsive iframe container */
+.responsive-iframe-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+.responsive-iframe-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 0.5rem;
+}
+
+.icon {
   font-size: 20px;
   border: 1px solid var(--border-color);
   border-radius: 10px;

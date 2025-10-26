@@ -648,11 +648,13 @@ const CodeEditor = ({
 
       {/* Enhanced Editor / Preview Container */}
       <motion.div 
-        className="sm:h-[80vh] relative overflow-hidden rounded-b-2xl"
+        className="h-[40vh] xs:h-[45vh] sm:h-[55vh] md:h-[60vh] lg:h-[65vh] xl:h-[70vh] 2xl:h-[75vh] relative overflow-hidden rounded-b-2xl"
         style={{
           background: isDarkMode 
             ? 'linear-gradient(135deg, rgba(17, 24, 39, 0.95) 0%, rgba(31, 41, 55, 0.9) 100%)' 
-            : 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)'
+            : 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)',
+          minHeight: '350px',
+          maxHeight: '85vh'
         }}
         variants={editorContainerVariants}
         initial="hidden"
@@ -688,7 +690,8 @@ const CodeEditor = ({
               exit={{ opacity: 0, x: 50, scale: 0.95 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
               style={{
-                boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+                boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                minHeight: '300px'
               }}
             >
               {/* Editor loading overlay */}
@@ -705,18 +708,28 @@ const CodeEditor = ({
                 theme={isDarkMode ? 'vs-dark' : 'light'} 
                 language="html"
                 options={{
-                  minimap: { enabled: false },
-                  fontSize: 15,
-                  fontFamily: 'JetBrains Mono, Fira Code, Consolas, monospace',
+                  minimap: { enabled: window.innerWidth > 768 },
+                  fontSize: window.innerWidth < 640 ? 12 : window.innerWidth < 1024 ? 14 : 15,
+                  fontFamily: 'JetBrains Mono, Fira Code, Consolas, SF Mono, Monaco, monospace',
                   wordWrap: 'on',
                   automaticLayout: true,
                   scrollBeyondLastLine: false,
-                  padding: { top: 20, bottom: 20 },
-                  lineHeight: 1.6,
+                  padding: { 
+                    top: window.innerWidth < 640 ? 10 : 20, 
+                    bottom: window.innerWidth < 640 ? 10 : 20,
+                    left: window.innerWidth < 640 ? 8 : 12,
+                    right: window.innerWidth < 640 ? 8 : 12
+                  },
+                  lineHeight: window.innerWidth < 640 ? 1.4 : 1.6,
                   cursorBlinking: 'smooth',
                   cursorSmoothCaretAnimation: true,
                   smoothScrolling: true,
                   fontLigatures: true,
+                  lineNumbers: window.innerWidth > 480 ? 'on' : 'off',
+                  folding: window.innerWidth > 768,
+                  renderWhitespace: window.innerWidth > 1024 ? 'selection' : 'none',
+                  tabSize: 2,
+                  insertSpaces: true,
                 }}
               />
             </motion.div>
@@ -728,12 +741,14 @@ const CodeEditor = ({
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: -50, scale: 0.95 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
+              style={{ minHeight: '300px' }}
             >
               {/* Preview frame with enhanced styling */}
               <motion.div
                 className="w-full h-full rounded-b-2xl overflow-hidden relative"
                 style={{
-                  boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 20px rgba(0, 0, 0, 0.1)'
+                  boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 20px rgba(0, 0, 0, 0.1)',
+                  minHeight: '300px'
                 }}
               >
                 {/* Loading shimmer effect */}
@@ -747,15 +762,20 @@ const CodeEditor = ({
                 <motion.iframe 
                   key={refreshKey} 
                   srcDoc={code} 
-                  className="w-full h-full bg-white text-black overflow-auto border-0"
+                  className="w-full h-full bg-white text-black border-0"
                   title="Code Preview"
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
                   style={{
                     borderRadius: '0 0 1rem 1rem',
-                    filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1))'
+                    filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1))',
+                    minHeight: '300px',
+                    overflow: 'auto',
+                    scrollbarWidth: 'thin',
+                    scrollbarColor: isDarkMode ? '#4B5563 #1F2937' : '#D1D5DB #F9FAFB'
                   }}
+                  sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-top-navigation-by-user-activation"
                 />
                 
                 {/* Preview overlay effects */}

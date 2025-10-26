@@ -36,9 +36,14 @@ Requirements:
 - Use appropriate width and height attributes
 - Avoid using random URLs that might be broken or return 404 errors
 - For user avatars or profile images, use: https://ui-avatars.com/api/?name=[name]&size=[size]
-- NEVER wrap images in clickable anchor tags (<a href="..."><img></a>) - this creates security issues
-- If you need clickable images, use onclick handlers or buttons instead
-- For galleries or lightboxes, use div containers with click handlers, not anchor links
+
+**CRITICAL LINK AND NAVIGATION RULES:**
+- NEVER create anchor tags (<a href="..."></a>) with empty href attributes (href="", href="#", href="javascript:void(0)")
+- NEVER wrap images or content in clickable anchor tags - this creates security issues in iframe previews
+- If you need clickable elements, use button tags with onclick handlers instead of anchor tags
+- For navigation links, use placeholder text like "About" or "Contact" but DO NOT make them clickable links
+- For galleries or lightboxes, use div containers with CSS hover effects, not anchor links
+- Remember: The generated code will be displayed in an iframe preview where clicking links can cause navigation issues
 `;
 }
 
