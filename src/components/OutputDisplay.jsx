@@ -1,5 +1,6 @@
 import React from 'react';
 import { HiOutlineCode } from 'react-icons/hi';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import CodeEditor from './CodeEditor';
 

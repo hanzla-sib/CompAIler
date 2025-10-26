@@ -83,7 +83,11 @@ const ComponentGenerator = ({
   const buttonVariants = {
     idle: { 
       scale: 1,
-      boxShadow: "0 4px 15px rgba(139, 92, 246, 0.3)"
+      boxShadow: "0 4px 15px rgba(139, 92, 246, 0.3)",
+      transition: { 
+        duration: 0.2,
+        ease: "easeOut"
+      }
     },
     hover: { 
       scale: 1.05,
@@ -101,9 +105,11 @@ const ComponentGenerator = ({
     },
     loading: {
       scale: 1,
-      background: "linear-gradient(45deg, #8b5cf6, #a855f7, #c084fc, #a855f7, #8b5cf6)",
-      backgroundSize: "400% 400%",
-      animation: "gradient 2s ease infinite"
+      boxShadow: "0 4px 15px rgba(139, 92, 246, 0.3)",
+      transition: { 
+        duration: 0.2,
+        ease: "easeOut"
+      }
     }
   };
 
@@ -217,29 +223,30 @@ const ComponentGenerator = ({
           className="flex items-center p-3 rounded-lg border-0 bg-gradient-to-r from-purple-400 to-purple-600 px-5 gap-2 text-white font-medium disabled:cursor-not-allowed relative overflow-hidden"
           variants={buttonVariants}
           initial="idle"
-          whileHover={!loading && !(!prompt?.trim()) ? "hover" : "idle"}
-          whileTap={!loading && !(!prompt?.trim()) ? "tap" : "idle"}
+          whileHover={!loading && prompt?.trim() ? "hover" : "idle"}
+          whileTap={!loading && prompt?.trim() ? "tap" : "idle"}
           animate={loading ? "loading" : "idle"}
+          key={loading ? "loading" : "idle"} // Force re-render when loading state changes
         >
           <AnimatePresence mode="wait">
             {loading ? (
               <motion.div
                 key="loading"
-                initial={{ opacity: 0, rotate: 0 }}
-                animate={{ opacity: 1, rotate: 360 }}
-                exit={{ opacity: 0 }}
-                transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
               >
                 <ClipLoader color='white' size={18} />
               </motion.div>
             ) : (
               <motion.div
                 key="stars"
-                initial={{ opacity: 0, scale: 0 }}
+                initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0 }}
+                exit={{ opacity: 0, scale: 0.8 }}
                 whileHover={{ rotate: [0, -10, 10, 0] }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
               >
                 <BsStars />
               </motion.div>
@@ -247,8 +254,11 @@ const ComponentGenerator = ({
           </AnimatePresence>
           
           <motion.span
-            animate={loading ? { opacity: [1, 0.7, 1] } : { opacity: 1 }}
-            transition={loading ? { repeat: Infinity, duration: 1.5 } : {}}
+            key={loading ? 'loading-text' : 'idle-text'}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
           >
             {loading ? 'Generating...' : 'Generate'}
           </motion.span>
