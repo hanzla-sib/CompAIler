@@ -1,7 +1,7 @@
 # CompAIler - AI-Powered Code Component Generator
 
-> **⚠️ Project Status: Currently in Development**  
-> This project is actively under development. Some features may be incomplete or subject to change. We're working hard to bring you the best AI-powered component generation experience!
+## Live Demo
+**Try CompAIler now:** [https://comp-a-iler-8y1lraalf-hanzlasibs-projects.vercel.app/](https://comp-a-iler-8y1lraalf-hanzlasibs-projects.vercel.app/)
 
 CompAIler is a web application that helps developers generate React components using Google's Gemini AI. Think of it as having a senior developer look over your shoulder, but it's an AI that never gets tired and works 24/7.
 
