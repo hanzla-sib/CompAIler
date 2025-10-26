@@ -18,25 +18,40 @@ CompAIler is like having a personal coding mentor. You describe what component y
 
 ## Screenshots of UI
 
+### Component Generation in Progress
+AI processing your component request with loading animation
+
+![CompAIler Processing](./images/processing1.png)
+
 ### Dark Mode Interface
-Clean, modern dark theme perfect for coding sessions
+Professional dark theme with enhanced code editor
 
-![CompAIler Dark Mode](placeholder-dark-mode.png)
+![CompAIler Dark Mode](./images/snip1Dark.png)
 
-### Light Mode Interface
-Professional light theme for daytime development
+### Light Mode Interface  
+Clean light theme for daytime development
 
-![CompAIler Light Mode](placeholder-light-mode.png)
+![CompAIler Light Mode](./images/snip2light.png)
 
-### AI Component Generator - Dark Mode
-AI-powered component generation with detailed preview and code editor
+### Generated Component - Example 1
+Complete component with live preview and code editor
 
-![CompAIler Generator Dark](placeholder-generator-dark.png)
+![CompAIler Generated Component 1](./images/done1.png)
 
-### AI Component Generator - Light Mode
-Same powerful AI features in light theme
+### Generated Component - Example 2
+Advanced component generation with styling
 
-![CompAIler Generator Light](placeholder-generator-light.png)
+![CompAIler Generated Component 2](./images/done2.png)
+
+### Generated Component - Example 3
+Complex component with interactive elements
+
+![CompAIler Generated Component 3](./images/done3.png)
+
+### Generated Component - Example 4
+Professional component output with responsive design
+
+![CompAIler Generated Component 4](./images/done4.png)
 
 ## How It Works (The Simple Version)
 

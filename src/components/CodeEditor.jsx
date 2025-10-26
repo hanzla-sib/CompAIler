@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Editor from '@monaco-editor/react';
-import { IoCopy, IoCheckmark } from 'react-icons/io5';
+import { IoCopy, IoCheckmark, IoCodeSlash, IoEyeOutline } from 'react-icons/io5';
 import { PiExportBold } from 'react-icons/pi';
 import { FiRefreshCcw } from 'react-icons/fi';
 import { HiOutlinePhotograph } from 'react-icons/hi';
@@ -271,10 +271,14 @@ const CodeEditor = ({
             } : {}}
           >
             <motion.span
-              animate={activeTab === 1 ? { scale: [1, 1.1, 1] } : {}}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
+              animate={activeTab === 1 ? { 
+                scale: [1, 1.1, 1],
+                rotate: [0, -2, 2, 0]
+              } : {}}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+              className="flex items-center"
             >
-              📝
+              <IoCodeSlash className="text-lg" />
             </motion.span>
             Code
           </motion.span>
@@ -354,10 +358,14 @@ const CodeEditor = ({
             } : {}}
           >
             <motion.span
-              animate={activeTab === 2 ? { scale: [1, 1.1, 1] } : {}}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
+              animate={activeTab === 2 ? { 
+                scale: [1, 1.1, 1],
+                rotate: [0, 5, -5, 0]
+              } : {}}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+              className="flex items-center"
             >
-              👁️
+              <IoEyeOutline className="text-lg" />
             </motion.span>
             Preview
           </motion.span>
@@ -640,7 +648,7 @@ const CodeEditor = ({
 
       {/* Enhanced Editor / Preview Container */}
       <motion.div 
-        className="sm:h-[280px] lg:h-[600px] relative overflow-hidden rounded-b-2xl"
+        className="sm:h-[80vh] relative overflow-hidden rounded-b-2xl"
         style={{
           background: isDarkMode 
             ? 'linear-gradient(135deg, rgba(17, 24, 39, 0.95) 0%, rgba(31, 41, 55, 0.9) 100%)' 

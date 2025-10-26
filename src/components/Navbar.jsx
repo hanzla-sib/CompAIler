@@ -134,24 +134,7 @@ const Navbar = () => {
             )}
           </motion.div>
         </motion.div>
-        
-        <motion.div 
-          className="icon"
-          variants={iconVariants}
-          whileHover="hover"
-          whileTap="tap"
-        >
-          <FaUser />
-        </motion.div>
-        
-        <motion.div 
-          className="icon"
-          variants={iconVariants}
-          whileHover="hover"
-          whileTap="tap"
-        >
-          <RiSettings3Fill />
-        </motion.div>
+
       </motion.div>
     </motion.div>
   )
