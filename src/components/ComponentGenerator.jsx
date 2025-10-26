@@ -2,6 +2,8 @@ import React from 'react';
 import Select from 'react-select';
 import { BsStars } from 'react-icons/bs';
 import { ClipLoader } from 'react-spinners';
+// eslint-disable-next-line no-unused-vars
+import { motion, AnimatePresence } from 'framer-motion';
 import { FRAMEWORK_OPTIONS } from '../constants/prompts';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -53,67 +55,213 @@ const ComponentGenerator = ({
     input: (base) => ({ ...base, color: isDarkMode ? "#fff" : "#1a202c" })
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { 
+        duration: 0.6,
+        ease: "easeOut",
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { 
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const buttonVariants = {
+    idle: { 
+      scale: 1,
+      boxShadow: "0 4px 15px rgba(139, 92, 246, 0.3)"
+    },
+    hover: { 
+      scale: 1.05,
+      boxShadow: "0 8px 25px rgba(139, 92, 246, 0.4)",
+      transition: { 
+        duration: 0.2,
+        ease: "easeInOut"
+      }
+    },
+    tap: { 
+      scale: 0.98,
+      transition: { 
+        duration: 0.1
+      }
+    },
+    loading: {
+      scale: 1,
+      background: "linear-gradient(45deg, #8b5cf6, #a855f7, #c084fc, #a855f7, #8b5cf6)",
+      backgroundSize: "400% 400%",
+      animation: "gradient 2s ease infinite"
+    }
+  };
+
   return (
-    <div className="w-full py-4 sm:py-6 rounded-xl mt-2 sm:mt-5 p-3 sm:p-5" 
-         style={{ backgroundColor: 'var(--secondary-bg)' }}>
-      <h3 className='text-xl sm:text-[25px] font-semibold sp-text'>AI Component Generator</h3>
-      <p className='mt-2 text-sm sm:text-[16px]' 
-         style={{ color: 'var(--text-secondary)' }}>
-        Describe your component and let AI code it for you.
-      </p>
+    <motion.div 
+      className="w-full py-4 sm:py-6 rounded-xl mt-2 sm:mt-5 p-3 sm:p-5 backdrop-blur-sm shadow-lg border border-opacity-20" 
+      style={{ 
+        backgroundColor: 'var(--secondary-bg)',
+        borderColor: 'var(--border-color)'
+      }}
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      whileHover={{ 
+        y: -2,
+        transition: { duration: 0.2 }
+      }}
+    >
+      <motion.div variants={itemVariants}>
+        <motion.h3 
+          className='text-xl sm:text-[25px] font-semibold sp-text'
+          whileHover={{ 
+            scale: 1.02,
+            textShadow: "0px 0px 8px rgba(192, 132, 252, 0.8)"
+          }}
+        >
+          AI Component Generator
+        </motion.h3>
+        <motion.p 
+          className='mt-2 text-sm sm:text-[16px]' 
+          style={{ color: 'var(--text-secondary)' }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          Describe your component and let AI code it for you.
+        </motion.p>
+      </motion.div>
 
-      <div className="mt-6">
-        <label className='text-[15px] font-[700] block' 
-               style={{ color: 'var(--text-color)' }}>Framework</label>
-        <Select
-          className='mt-2'
-          options={FRAMEWORK_OPTIONS}
-          value={framework}
-          styles={selectStyles}
-          onChange={onFrameworkChange}
-          placeholder="Select a framework..."
-          isSearchable
-        />
-      </div>
+      <motion.div className="mt-6" variants={itemVariants}>
+        <motion.label 
+          className='text-[15px] font-[700] block' 
+          style={{ color: 'var(--text-color)' }}
+          whileHover={{ x: 2 }}
+        >
+          Framework
+        </motion.label>
+        <motion.div
+          whileHover={{ scale: 1.01 }}
+          whileFocus={{ scale: 1.01 }}
+        >
+          <Select
+            className='mt-2'
+            options={FRAMEWORK_OPTIONS}
+            value={framework}
+            styles={selectStyles}
+            onChange={onFrameworkChange}
+            placeholder="Select a framework..."
+            isSearchable
+          />
+        </motion.div>
+      </motion.div>
 
-      <div className="mt-5">
-        <label className='text-[15px] font-[700] block' 
-               style={{ color: 'var(--text-color)' }}>
+      <motion.div className="mt-5" variants={itemVariants}>
+        <motion.label 
+          className='text-[15px] font-[700] block' 
+          style={{ color: 'var(--text-color)' }}
+          whileHover={{ x: 2 }}
+        >
           Describe your component
-        </label>
-        <textarea
+        </motion.label>
+        <motion.textarea
           onChange={(e) => onPromptChange(e.target.value)}
           value={prompt}
-          className='w-full min-h-[150px] sm:min-h-[200px] rounded-xl mt-3 p-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-purple-500 resize-none border'
+          className='w-full min-h-[150px] sm:min-h-[200px] rounded-xl mt-3 p-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-purple-500 resize-none border transition-all duration-300'
           style={{
             backgroundColor: 'var(--input-bg)',
             color: 'var(--text-color)',
             borderColor: 'var(--border-color)',
-            '::placeholder': { color: 'var(--text-secondary)' }
           }}
           placeholder="Describe your component in detail and AI will generate it..."
           disabled={loading}
+          whileFocus={{ 
+            scale: 1.01,
+            boxShadow: "0 0 0 3px rgba(139, 92, 246, 0.1)"
+          }}
+          whileHover={{ 
+            borderColor: "#8b5cf6",
+            transition: { duration: 0.2 }
+          }}
         />
-      </div>
+      </motion.div>
 
-      <div className="flex items-center justify-between mt-4">
-        <p className='text-sm' style={{ color: 'var(--text-secondary)' }}>
+      <motion.div 
+        className="flex items-center justify-between mt-4" 
+        variants={itemVariants}
+      >
+        <motion.p 
+          className='text-sm' 
+          style={{ color: 'var(--text-secondary)' }}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.5 }}
+        >
           Click on generate button to get your code
-        </p>
-        <button
+        </motion.p>
+        
+        <motion.button
           onClick={onGenerate}
           disabled={loading || !prompt?.trim()}
-          className="flex items-center p-3 rounded-lg border-0 bg-gradient-to-r from-purple-400 to-purple-600 px-5 gap-2 transition-all hover:opacity-80 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 text-white"
+          className="flex items-center p-3 rounded-lg border-0 bg-gradient-to-r from-purple-400 to-purple-600 px-5 gap-2 text-white font-medium disabled:cursor-not-allowed relative overflow-hidden"
+          variants={buttonVariants}
+          initial="idle"
+          whileHover={!loading && !(!prompt?.trim()) ? "hover" : "idle"}
+          whileTap={!loading && !(!prompt?.trim()) ? "tap" : "idle"}
+          animate={loading ? "loading" : "idle"}
         >
-          {loading ? (
-            <ClipLoader color='white' size={18} />
-          ) : (
-            <BsStars />
-          )}
-          {loading ? 'Generating...' : 'Generate'}
-        </button>
-      </div>
-    </div>
+          <AnimatePresence mode="wait">
+            {loading ? (
+              <motion.div
+                key="loading"
+                initial={{ opacity: 0, rotate: 0 }}
+                animate={{ opacity: 1, rotate: 360 }}
+                exit={{ opacity: 0 }}
+                transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+              >
+                <ClipLoader color='white' size={18} />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="stars"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0 }}
+                whileHover={{ rotate: [0, -10, 10, 0] }}
+                transition={{ duration: 0.3 }}
+              >
+                <BsStars />
+              </motion.div>
+            )}
+          </AnimatePresence>
+          
+          <motion.span
+            animate={loading ? { opacity: [1, 0.7, 1] } : { opacity: 1 }}
+            transition={loading ? { repeat: Infinity, duration: 1.5 } : {}}
+          >
+            {loading ? 'Generating...' : 'Generate'}
+          </motion.span>
+          
+          {/* Animated background effect */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 opacity-0"
+            whileHover={{ opacity: 0.1 }}
+            transition={{ duration: 0.3 }}
+          />
+        </motion.button>
+      </motion.div>
+    </motion.div>
   );
 };
 
