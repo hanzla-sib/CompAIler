@@ -1,6 +1,6 @@
 import React from 'react';
 import { HiOutlineCode } from 'react-icons/hi';
-import { IoCloseSharp } from 'react-icons/io5';
+import { motion, AnimatePresence } from 'framer-motion';
 import CodeEditor from './CodeEditor';
 
 /**
@@ -10,8 +10,6 @@ import CodeEditor from './CodeEditor';
  * @param {boolean} props.hasOutput - Whether there is generated output
  * @param {number} props.activeTab - Active tab (1 for code, 2 for preview)
  * @param {function} props.onTabChange - Handler for tab changes
- * @param {boolean} props.isNewTabOpen - Whether preview is open in new tab
- * @param {function} props.onNewTabToggle - Handler for new tab toggle
  * @param {number} props.refreshKey - Key for forcing preview refresh
  * @param {function} props.onRefresh - Handler for refreshing preview
  * @param {function} props.onFixImages - Handler for fixing broken images
@@ -21,57 +19,158 @@ const OutputDisplay = ({
   hasOutput, 
   activeTab, 
   onTabChange, 
-  isNewTabOpen, 
-  onNewTabToggle,
   refreshKey,
   onRefresh,
   onFixImages
 }) => {
+  const containerVariants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: { 
+      opacity: 1, 
+      scale: 1,
+      transition: { 
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const emptyStateVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { 
+        duration: 0.6,
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const iconVariants = {
+    hidden: { scale: 0, rotate: -180 },
+    visible: { 
+      scale: 1, 
+      rotate: 0,
+      transition: { 
+        type: "spring",
+        stiffness: 200,
+        damping: 15
+      }
+    }
+  };
+
+  const textVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { 
+        duration: 0.4
+      }
+    }
+  };
+
+
+
   return (
     <>
-      <div className="relative mt-2 w-full h-[50vh] sm:h-[60vh] lg:h-[80vh] bg-[#141319] rounded-xl overflow-hidden">
-        {!hasOutput ? (
-          <div className="w-full h-full flex items-center flex-col justify-center">
-            <div className="p-5 w-[70px] flex items-center justify-center text-[30px] h-[70px] rounded-full bg-gradient-to-r from-purple-400 to-purple-600">
-              <HiOutlineCode />
-            </div>
-            <p className='text-[16px] text-gray-400 mt-3'>
-              Your component & code will appear here.
-            </p>
-          </div>
-        ) : (
-          <CodeEditor
-            code={code}
-            activeTab={activeTab}
-            onTabChange={onTabChange}
-            onNewTab={() => onNewTabToggle(true)}
-            onRefresh={onRefresh}
-            onFixImages={onFixImages}
-            refreshKey={refreshKey}
-          />
-        )}
-      </div>
-
-      {/* Fullscreen Preview Overlay */}
-      {isNewTabOpen && (
-        <div className="fixed inset-0 bg-white w-screen h-screen overflow-auto z-50">
-          <div className="text-black w-full h-[60px] flex items-center justify-between px-5 bg-gray-100 border-b">
-            <p className='font-bold'>Preview - CompAIler Generated Component</p>
-            <button 
-              onClick={() => onNewTabToggle(false)} 
-              className="w-10 h-10 rounded-xl border border-zinc-300 flex items-center justify-center hover:bg-gray-200 transition-colors"
-              title="Close Preview"
+      <motion.div 
+        className="relative mt-2 w-full h-[50vh] sm:h-[60vh] lg:h-[80vh] rounded-xl overflow-hidden shadow-lg border border-opacity-20"
+        style={{ 
+          backgroundColor: 'var(--secondary-bg)',
+          borderColor: 'var(--border-color)'
+        }}
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <AnimatePresence mode="wait">
+          {!hasOutput ? (
+            <motion.div 
+              key="empty-state"
+              className="w-full h-full flex items-center flex-col justify-center"
+              variants={emptyStateVariants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
             >
-              <IoCloseSharp />
-            </button>
-          </div>
-          <iframe 
-            srcDoc={code} 
-            className="w-full h-[calc(100vh-60px)]"
-            title="Full Screen Preview"
-          />
-        </div>
-      )}
+              <motion.div 
+                className="p-5 w-[70px] flex items-center justify-center text-[30px] h-[70px] rounded-full bg-gradient-to-r from-purple-400 to-purple-600 shadow-lg"
+                variants={iconVariants}
+                whileHover={{ 
+                  scale: 1.1,
+                  rotate: 360,
+                  transition: { duration: 0.6 }
+                }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <motion.div
+                  animate={{ 
+                    rotate: [0, 10, -10, 0],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  <HiOutlineCode />
+                </motion.div>
+              </motion.div>
+              
+              <motion.p 
+                className='text-[16px] mt-3 text-center max-w-xs'
+                style={{ color: 'var(--text-secondary)' }}
+                variants={textVariants}
+              >
+                Your component & code will appear here.
+              </motion.p>
+              
+              <motion.div
+                className="mt-4 flex space-x-2"
+                variants={textVariants}
+              >
+                {[...Array(3)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="w-2 h-2 rounded-full bg-purple-400"
+                    animate={{ 
+                      scale: [1, 1.5, 1],
+                      opacity: [0.5, 1, 0.5]
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      delay: i * 0.2
+                    }}
+                  />
+                ))}
+              </motion.div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="code-editor"
+              className="w-full h-full"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.4 }}
+            >
+              <CodeEditor
+                code={code}
+                activeTab={activeTab}
+                onTabChange={onTabChange}
+                onRefresh={onRefresh}
+                onFixImages={onFixImages}
+                refreshKey={refreshKey}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+
+      {/* No overlay needed - we're opening in a new tab/window */}
     </>
   );
 };
